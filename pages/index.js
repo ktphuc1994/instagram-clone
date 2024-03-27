@@ -1,3 +1,4 @@
+import Header from '@/components/Header';
 import Head from 'next/head';
 
 export default function Home() {
@@ -11,7 +12,14 @@ export default function Home() {
         />
         <link ref='icon' href='/favicon.ico' />
       </Head>
-      <main className=''>Hellow</main>
+      <main className=''>
+        {/** Header */}
+        <Header />
+
+        {/** Feed */}
+
+        {/** Modal */}
+      </main>
     </>
   );
 }
