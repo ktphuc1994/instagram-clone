@@ -16,6 +16,7 @@ export default function Header() {
             src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/800px-Instagram_logo.svg.png'
             alt='instagram-logo'
             fill
+            sizes='96px'
             className='object-contain'
           />
         </div>
@@ -24,6 +25,7 @@ export default function Header() {
             src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/2048px-Instagram_logo_2016.svg.png'
             alt='instagram-logo'
             fill
+            sizes='40px'
             className='object-contain'
           />
         </div>
