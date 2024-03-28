@@ -3,6 +3,7 @@ import {
   HeartIcon,
   ChatBubbleOvalLeftEllipsisIcon,
   BookmarkIcon,
+  FaceSmileIcon,
 } from '@heroicons/react/24/outline';
 
 export default function PostItem({ id, username, userImage, img, caption }) {
@@ -32,6 +33,23 @@ export default function PostItem({ id, username, userImage, img, caption }) {
           <BookmarkIcon className='btn' />
         </div>
       </div>
+
+      {/** Post comments */}
+      <p className='p-5 line-clamp-2'>
+        <span className='font-bold mr-2'>{username}</span>
+        {caption}
+      </p>
+
+      {/** Post Input Box */}
+      <form className='flex items-center p-4'>
+        <FaceSmileIcon className='h-7' />
+        <input
+          className='flex-1 focus:outline-none py-1.5 px-2'
+          type='text'
+          placeholder='Add a comment...'
+        />
+        <button className='text-blue-400 font-bold'>Post</button>
+      </form>
     </div>
   );
 }
