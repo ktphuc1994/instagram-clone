@@ -1,9 +1,10 @@
+import Feed from '@/components/Feed';
 import Header from '@/components/Header';
 import Head from 'next/head';
 
 export default function Home() {
   return (
-    <>
+    <div className='bg-gray-50 min-h-screen'>
       <Head>
         <title>Instagram App Clone</title>
         <meta
@@ -12,14 +13,13 @@ export default function Home() {
         />
         <link ref='icon' href='/favicon.ico' />
       </Head>
-      <main className=''>
-        {/** Header */}
-        <Header />
+      {/** Header */}
+      <Header />
 
-        {/** Feed */}
+      {/** Feed */}
+      <Feed />
 
-        {/** Modal */}
-      </main>
-    </>
+      {/** Modal */}
+    </div>
   );
 }
