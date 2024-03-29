@@ -21,7 +21,6 @@ export default function Stories() {
   useEffect(() => {
     const fakerStoryUsers = _createUsers(20);
     setStoryUsers(fakerStoryUsers);
-    console.log({ fakerStoryUsers });
   }, []);
 
   return (

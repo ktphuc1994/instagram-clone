@@ -1,17 +1,26 @@
+import Link from 'next/link';
 import Image from 'next/image';
 import {
   MagnifyingGlassIcon,
   PlusCircleIcon,
 } from '@heroicons/react/24/outline';
 import { HomeIcon } from '@heroicons/react/24/solid';
+import { signOut, useSession } from 'next-auth/react';
 
 export default function Header() {
+  const { data: session } = useSession();
+
+  console.log({ session });
+
   return (
     <div className='shadow-sm border-b sticky top-0 bg-white z-30'>
       <div className='flex items-center justify-between max-w-6xl mx-auto px-4'>
         {/** Left */}
 
-        <div className='shrink-0 h-24 w-24 relative hidden lg:inline-grid cursor-pointer'>
+        <Link
+          href='/'
+          className='shrink-0 h-24 w-24 relative hidden lg:inline-grid cursor-pointer'
+        >
           <Image
             src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/800px-Instagram_logo.svg.png'
             alt='instagram-logo'
@@ -19,8 +28,11 @@ export default function Header() {
             sizes='96px'
             className='object-contain'
           />
-        </div>
-        <div className='shrink-0 h-24 w-10 relative lg:hidden cursor-pointer'>
+        </Link>
+        <Link
+          href='/'
+          className='shrink-0 h-24 w-10 relative lg:hidden cursor-pointer'
+        >
           <Image
             src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/2048px-Instagram_logo_2016.svg.png'
             alt='instagram-logo'
@@ -28,7 +40,7 @@ export default function Header() {
             sizes='40px'
             className='object-contain'
           />
-        </div>
+        </Link>
 
         {/** Middle */}
         <div className='relative mt-1 pl-4'>
@@ -45,12 +57,19 @@ export default function Header() {
         {/** Right */}
         <div className='shrink-0 flex space-x-4 items-center'>
           <HomeIcon className='hidden md:inline-flex h-6 cursor-pointer hover:scale-125 transition-transform duration-200 ease-out' />
-          <PlusCircleIcon className='h-6 cursor-pointer hover:scale-125 transition-transform duration-200 ease-out' />
-          <img
-            src='https://media.licdn.com/dms/image/C5603AQEeDVn0pnKpDQ/profile-displayphoto-shrink_800_800/0/1623814405277?e=2147483647&v=beta&t=6KsthbGW6_lqQg_GVW7rjiaeHk9rs4-uJx1eN_4OYtg'
-            alt='user-image'
-            className='h-10 w-10 rounded-full cursor-pointer'
-          />
+          {session ? (
+            <>
+              <PlusCircleIcon className='h-6 cursor-pointer hover:scale-125 transition-transform duration-200 ease-out' />
+              <img
+                src={session.user.image}
+                alt={session.user.name}
+                className='h-10 w-10 rounded-full cursor-pointer'
+                onClick={signOut}
+              />
+            </>
+          ) : (
+            <Link href='/auth/signin'>Sign in</Link>
+          )}
         </div>
       </div>
     </div>

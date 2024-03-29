@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import Head from 'next/head';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
