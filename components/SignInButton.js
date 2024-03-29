@@ -44,7 +44,13 @@ export default function SignInButton({ providerId, providerName }) {
   if (status === 'authenticated') {
     return (
       <div className='text-center'>
-        <h2> Welcome {session.user.email} 😀</h2>
+        <h2 className='mb-2'>
+          Welcome{' '}
+          <span className='font-semibold text-lg'>
+            {session.user?.name || session.user?.name}
+          </span>{' '}
+          😀
+        </h2>
         <Button onClick={() => signOut()}>Sign out</Button>
       </div>
     );

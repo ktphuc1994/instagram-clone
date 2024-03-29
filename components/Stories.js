@@ -4,6 +4,7 @@ import Story from './Story';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
+import { useSession } from 'next-auth/react';
 
 const _createUser = () => ({
   username: faker.internet.userName().toLowerCase(),
@@ -16,6 +17,7 @@ const _createUsers = (numUsers = 5) => {
 };
 
 export default function Stories() {
+  const { data: session } = useSession();
   const [storyUsers, setStoryUsers] = useState([]);
 
   useEffect(() => {
@@ -26,9 +28,18 @@ export default function Stories() {
   return (
     <div className='py-6 bg-white mt-8 border border-gray-200 rounded-sm'>
       <Swiper slidesPerView='auto'>
+        {session ? (
+          <SwiperSlide style={{ width: 'auto' }}>
+            <Story
+              username={session.user.username}
+              img={session.user.image}
+              isUser={true}
+            />
+          </SwiperSlide>
+        ) : null}
         {storyUsers.map((user) => (
           <SwiperSlide key={user.id} style={{ width: 'auto' }}>
-            {<Story {...user} />}
+            <Story {...user} />
           </SwiperSlide>
         ))}
       </Swiper>
