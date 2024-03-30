@@ -58,7 +58,9 @@ export default function Header() {
 
         {/** Right */}
         <div className='shrink-0 flex space-x-4 items-center'>
-          <HomeIcon className='hidden md:inline-flex h-6 cursor-pointer hover:scale-125 transition-transform duration-200 ease-out' />
+          <Link href='/'>
+            <HomeIcon className='hidden md:inline-flex h-6 cursor-pointer hover:scale-125 transition-transform duration-200 ease-out' />
+          </Link>
           {session ? (
             <>
               <PlusCircleIcon

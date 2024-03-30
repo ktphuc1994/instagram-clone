@@ -34,7 +34,7 @@ export default function PostList() {
     );
 
     return unsubscribe;
-  }, []);
+  }, [db]);
 
   return (
     <div>
