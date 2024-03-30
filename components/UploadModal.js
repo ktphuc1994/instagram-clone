@@ -74,7 +74,6 @@ export default function UploadModal() {
 
   return (
     <div>
-      <h1>Upload Modal</h1>
       {open && (
         <ModalCommon open={open} onClose={handleCloseModal}>
           <div className='flex flex-col justify-center items-center h-full'>
