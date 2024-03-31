@@ -1,0 +1,8 @@
+.comment::-webkit-scrollbar {
+  display: none;
+}
+
+.comment {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

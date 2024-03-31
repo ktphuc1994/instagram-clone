@@ -1,4 +1,5 @@
 import { useSession } from 'next-auth/react';
+import Moment from 'react-moment';
 import {
   EllipsisHorizontalIcon,
   HeartIcon,
@@ -6,13 +7,36 @@ import {
   BookmarkIcon,
   FaceSmileIcon,
 } from '@heroicons/react/24/outline';
-import { useState } from 'react';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import {
+  addDoc,
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+} from 'firebase/firestore';
 import { db } from '@/firebase';
+import classes from './PostItem.module.css';
 
 export default function PostItem({ id, username, userImage, img, caption }) {
   const { data: session } = useSession();
   const [comment, setComment] = useState('');
+  const [comments, setComments] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      query(
+        collection(db, 'posts', id, 'comments'),
+        orderBy('timestamp', 'desc')
+      ),
+      (snapshot) => {
+        setComments(snapshot.docs);
+      }
+    );
+
+    return unsubscribe;
+  }, [db, id]);
 
   const sendComment = async (event) => {
     event.preventDefault();
@@ -61,6 +85,27 @@ export default function PostItem({ id, username, userImage, img, caption }) {
         <span className='font-bold mr-2'>{username}</span>
         {caption}
       </p>
+      {comments.length > 0 && (
+        <div className={`${classes.comment} mx-10 max-h-24 overflow-y-scroll`}>
+          {comments.map((commentInfo) => (
+            <div
+              key={commentInfo.id}
+              className='flex items-center space-x-2 mb-2'
+            >
+              <img
+                className='h-7 w-7 rounded-full object-cover'
+                src={commentInfo.data().userImage}
+                alt='user-image'
+              />
+              <p className='font-semibold'>{commentInfo.data().username}</p>
+              <p className='flex-1 line-clamp-2'>
+                {commentInfo.data().comment}
+              </p>
+              <Moment fromNow>{commentInfo.data().timestamp?.toDate()}</Moment>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/** Post Input Box */}
       {session ? (
