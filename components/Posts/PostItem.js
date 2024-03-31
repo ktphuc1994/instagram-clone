@@ -1,4 +1,3 @@
-import { useSession } from 'next-auth/react';
 import Moment from 'react-moment';
 import {
   EllipsisHorizontalIcon,
@@ -23,13 +22,15 @@ import {
 } from 'firebase/firestore';
 import { db } from '@/firebase';
 import classes from './PostItem.module.css';
+import { useRecoilState } from 'recoil';
+import { userState } from '@/atom/userAtom';
 
 export default function PostItem({ id, username, userImage, img, caption }) {
-  const { data: session } = useSession();
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const [hasLiked, setHasLiked] = useState(false);
   const [totalLikes, setTotalLikes] = useState(0);
+  const [currentUser] = useRecoilState(userState);
 
   useEffect(() => {
     const unsubscribeComments = onSnapshot(
@@ -46,7 +47,7 @@ export default function PostItem({ id, username, userImage, img, caption }) {
       collection(db, 'posts', id, 'likes'),
       (snapshot) => {
         const isLiked = snapshot.docs.find(
-          (likeInfo) => likeInfo.id === session?.user?.uid
+          (likeInfo) => likeInfo.id === currentUser?.uid
         );
         setHasLiked(!!isLiked);
         setTotalLikes(snapshot.docs.length);
@@ -61,12 +62,12 @@ export default function PostItem({ id, username, userImage, img, caption }) {
 
   const likePost = async () => {
     if (hasLiked) {
-      await deleteDoc(doc(db, 'posts', id, 'likes', session.user.uid));
+      await deleteDoc(doc(db, 'posts', id, 'likes', currentUser?.uid));
       return;
     }
 
-    await setDoc(doc(db, 'posts', id, 'likes', session.user.uid), {
-      username: session.user.username,
+    await setDoc(doc(db, 'posts', id, 'likes', currentUser?.uid), {
+      username: currentUser?.username,
     });
   };
 
@@ -77,8 +78,8 @@ export default function PostItem({ id, username, userImage, img, caption }) {
 
     await addDoc(collection(db, 'posts', id, 'comments'), {
       comment: commentToSend,
-      username: session.user?.username,
-      userImage: session.user?.image,
+      username: currentUser?.username,
+      userImage: currentUser?.userImg,
       timestamp: serverTimestamp(),
     });
   };
@@ -100,7 +101,7 @@ export default function PostItem({ id, username, userImage, img, caption }) {
       <img src={img} alt={caption} className='object-cover w-full' />
 
       {/** Post Button */}
-      {session ? (
+      {currentUser ? (
         <div>
           <div className='flex justify-between px-4 pt-4'>
             <div className='flex space-x-4'>
@@ -150,7 +151,7 @@ export default function PostItem({ id, username, userImage, img, caption }) {
       )}
 
       {/** Post Input Box */}
-      {session ? (
+      {currentUser ? (
         <form className='flex items-center p-4'>
           <FaceSmileIcon className='h-7' />
           <input

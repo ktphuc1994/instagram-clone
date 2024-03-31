@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { signOut, useSession } from 'next-auth/react';
 import {
   MagnifyingGlassIcon,
   PlusCircleIcon,
@@ -8,11 +7,39 @@ import {
 import { HomeIcon } from '@heroicons/react/24/solid';
 import { useRecoilState } from 'recoil';
 import { modalState } from '@/atom/modalAtom';
+import { useEffect } from 'react';
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/firebase';
+import { userState } from '@/atom/userAtom';
 
 export default function Header() {
-  const { data: session } = useSession();
-
   const [_open, setOpen] = useRecoilState(modalState);
+  const [currentUser, setCurrentUser] = useRecoilState(userState);
+  const auth = getAuth();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (!user) return;
+
+      const uid = user.providerData[0]?.uid;
+      if (!uid) return;
+
+      const fetchUser = async () => {
+        const docRef = doc(db, 'users', uid);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) return;
+
+        setCurrentUser(docSnap.data());
+      };
+      fetchUser();
+    });
+  }, []);
+
+  const onSignOut = () => {
+    signOut(auth);
+    setCurrentUser(null);
+  };
 
   return (
     <div className='shadow-sm border-b sticky top-0 bg-white z-30'>
@@ -61,7 +88,7 @@ export default function Header() {
           <Link href='/'>
             <HomeIcon className='hidden md:inline-flex h-6 cursor-pointer hover:scale-125 transition-transform duration-200 ease-out' />
           </Link>
-          {session ? (
+          {currentUser ? (
             <>
               <PlusCircleIcon
                 onClick={() => {
@@ -70,10 +97,10 @@ export default function Header() {
                 className='h-6 cursor-pointer hover:scale-125 transition-transform duration-200 ease-out'
               />
               <img
-                src={session.user.image}
-                alt={session.user.name}
+                src={currentUser.userImg}
+                alt={currentUser.username}
                 className='h-10 w-10 rounded-full cursor-pointer'
-                onClick={signOut}
+                onClick={onSignOut}
               />
             </>
           ) : (
