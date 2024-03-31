@@ -119,11 +119,14 @@ export default function PostItem({ id, username, userImage, img, caption }) {
         </div>
       ) : null}
 
-      {/** Post comments */}
+      {/** Post caption */}
       <p className='p-5 line-clamp-2'>
+        {totalLikes > 0 && <p className='font-bold mb-1'>{totalLikes} likes</p>}
         <span className='font-bold mr-2'>{username}</span>
         {caption}
       </p>
+
+      {/** Post comments */}
       {comments.length > 0 && (
         <div className={`${classes.comment} mx-10 max-h-24 overflow-y-scroll`}>
           {comments.map((commentInfo) => (
